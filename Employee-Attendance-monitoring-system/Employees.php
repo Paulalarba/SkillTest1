@@ -1,3 +1,16 @@
+<!--create php function-->
+<?php
+include 'db.php';
+$editData = null;
+
+if (isset($_GET['edit'])){
+    $editId = $_GET['edit'];
+    $result = mysqli_query($conn, "SELECT * FROM employees WHERE empID = '$editId'");
+    $editData = mysqli_fetch_assoc($result);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +22,6 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center">Employees Management</h1>
-    </div>  
+    </div>
 </body>
 </html>

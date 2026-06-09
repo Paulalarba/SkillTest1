@@ -1,22 +1,53 @@
 <?php
-//Add Departmentl logic
 include 'db.php';
-if(isset($_POST ['Save'])){
+
+$editData = null; // Initialize variable to avoid "undefined variable" errors
+
+// --- 1. FETCH DATA FOR EDITING ---
+// This happens when you click the 'Edit' link in the table
+if (isset($_GET['edit'])) {
+    $editCode = $_GET['edit'];
+    $result = mysqli_query($conn, "SELECT * FROM departments WHERE depCode = '$editCode'");
+    $editData = mysqli_fetch_assoc($result);
+}
+
+// --- 2. ADD NEW DEPARTMENT ---
+if(isset($_POST['Save'])){
     $code = $_POST['code'];
     $name = $_POST['name'];
     $head = $_POST['head'];
-    $telNo = $_POST['telNo'];
+    $tellNo = $_POST['tellNo'];
     
     $sql = "INSERT INTO departments (depCode, depName, depHead, depTellNo) 
-            VALUES ('$code', '$name', '$head', '$telNo')";
+            VALUES ('$code', '$name', '$head', '$tellNo')";
     mysqli_query($conn, $sql);
-
+    header("Location: Department.php"); // Refresh page to clear form
 }
+
+// --- 3. UPDATE EXISTING DEPARTMENT ---
+if (isset($_POST['update'])){
+    $code = $_POST['code'];
+    $name = $_POST['name'];
+    $head = $_POST['head'];
+    $tellNo = $_POST['tellNo'];
+
+    $sql = "UPDATE departments 
+            SET depName = '$name', 
+            depHead = '$head', 
+            depTellNo = '$tellNo' 
+            WHERE depCode = $code";
+    mysqli_query($conn, $sql);
+    header("Location: Department.php"); // Refresh page to clear form
+}
+
+// --- 4. DELETE DEPARTMENT ---
 if (isset($_GET['del'])){
-    $id = $_GET['id'];
-    mysqli_query($conn, "DELETE FROM departments WHERE depCode = $id");
+    $code = $_GET['del'];
+    mysqli_query($conn, "DELETE FROM departments WHERE depCode = $code");
+    header("Location: Department.php");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,42 +60,58 @@ if (isset($_GET['del'])){
     <div class="container mt-5">
         <h1 class="text-center">Departments Management</h1>
         <hr>
+        
         <form method="POST" class="row g-3 mb-4">
             <div class="col-md-3">
-                <input type="text" name="code" class="form-control" placeholder="Department Code" required>
+                <!-- If editing, make the code readonly so it doesn't change the Primary Key -->
+                <input type="number" name="code" class="form-control" placeholder="Department Code" 
+               value="<?php echo $editData['depCode'] ?? ''; ?>" <?php echo isset($editData) ? 'readonly' : ''; ?> required>
             </div>
             <div class="col-md-3">
-                <input type="text" name="name" class="form-control" placeholder="Department Name" required>
+                <input type="text" name="name" class="form-control" placeholder="Department Name" 
+                value="<?php echo $editData['depName'] ?? ''; ?>" required>
             </div>
             <div class="col-md-3">
-                <input type="text" name="head" class="form-control" placeholder="Department Head" required>
+                <input type="text" name="head" class="form-control" placeholder="Department Head" 
+                value="<?php echo $editData['depHead'] ?? ''; ?>" required>
             </div>
             <div class="col-md-3">
-                <input type="text" name="telNo" class="form-control" placeholder="Department Tel No." required>
+                <input type="text" name="tellNo" class="form-control" placeholder="Department Tell No." 
+                value="<?php echo $editData['depTellNo'] ?? ''; ?>" required>
             </div>
             <div class="col-12">
-                <button type="submit" name="Save" class="btn btn-primary">Add Department</button>
+                <?php if (isset($editData)): ?>
+                    <!-- Show Update button only when editing -->
+                    <button type="submit" name="update" class="btn btn-success">Update Department</button>
+                    <a href="Department.php" class="btn btn-secondary">Cancel</a>
+                <?php else: ?>
+                    <!-- Show Save button only when adding new -->
+                    <button type="submit" name="Save" class="btn btn-primary">Add Department</button>
+                <?php endif; ?>
+                <a href="index.php" class="btn btn-secondary">Back to Home</a>
             </div>
-
         </form>
 
         <table class="table table-bordered">
-        <tr class="table-dark"><th>Code</th><th>Name</th><th>Head</th><th>Tel</th><th>Action</th></tr>
-        <?php 
-        // Select all records from the Departments table
-        $res = mysqli_query($conn, "SELECT * FROM Departments");
-        // while loop fetches each row one by one as an associative array
-        while($row = mysqli_fetch_assoc($res)) {
-            echo "<tr>
-                <td>{$row['depCode']}</td>
-                <td>{$row['depName']}</td>
-                <td>{$row['depHead']}</td>
-                <td>{$row['depTelNo']}</td>
-                <td><a href='?del={$row['depCode']}' class='btn btn-danger btn-sm'>Delete</a></td>
-            </tr>";
-        }
-        ?>
-    </table>
+            <tr class="table-dark">
+                <th>Code</th><th>Name</th><th>Head</th><th>Tell No.</th><th>Action</th>
+            </tr>
+            <?php 
+            $res = mysqli_query($conn, "SELECT * FROM departments");
+            while($row = mysqli_fetch_assoc($res)) {
+                echo "<tr>
+                    <td>{$row['depCode']}</td>
+                    <td>{$row['depName']}</td>
+                    <td>{$row['depHead']}</td>
+                    <td>{$row['depTellNo']}</td>
+                    <td>
+                        <a href='?del={$row['depCode']}' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure?\")'>Delete</a>
+                        <a href='?edit={$row['depCode']}' class='btn btn-warning btn-sm'>Edit</a>
+                    </td>
+                </tr>";
+            }
+            ?>
+        </table>
     </div>
 </body>
 </html>
