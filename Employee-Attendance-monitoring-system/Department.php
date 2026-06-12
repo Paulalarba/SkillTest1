@@ -1,6 +1,6 @@
 <?php
 include 'db.php';
-
+$errorMessage = "";
 $editData = null; // Initialize variable to avoid "undefined variable" errors
 
 // --- 1. FETCH DATA FOR EDITING ---
@@ -63,11 +63,11 @@ if (isset($_GET['del'])){
         
         <form method="POST" class="row g-3 mb-4">
             <div class="col-md-3">
-                <!-- If editing, make the code readonly so it doesn't change the Primary Key -->
-                <input type="number" name="code" class="form-control" placeholder="Department Code" 
-               value="<?php echo $editData['depCode'] ?? ''; ?>" <?php echo isset($editData) ? 'readonly' : ''; ?> required>
+                <input type="text" name="code" class="form-control" placeholder="Department Code"
+                    value="<?php echo $editData['depCode'] ?? ''; ?>"
+                    <?php echo $editData ? 'readonly' : ''; ?> required>
             </div>
-            <div class="col-md-3">
+                        <div class="col-md-3">
                 <input type="text" name="name" class="form-control" placeholder="Department Name" 
                 value="<?php echo $editData['depName'] ?? ''; ?>" required>
             </div>
