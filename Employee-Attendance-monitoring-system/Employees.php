@@ -2,33 +2,45 @@
 <?php
 include 'db.php';
 $editData = null;
+mysqli_report(MYSQLI_REPORT_OFF);
 
-//edit data
+
+// --- 1. EDIT DATA ---
 if (isset($_GET['edit'])){
-    $editId = $_GET['edit'];
+    // Secure the input
+    $editId = mysqli_real_escape_string($conn, $_GET['edit']);
     $result = mysqli_query($conn, "SELECT * FROM employees WHERE empID = '$editId'");
     $editData = mysqli_fetch_assoc($result);
 }
-//Add Employees logic
+
+// --- 2. ADD EMPLOYEES LOGIC ---
 if(isset($_POST['save'])){
-    $id = $_POST['id'];
-    $code = $_POST['code'];
-    $FName = $_POST['FName'];
-    $LName = $_POST['LName'];
-    $empRatePH = $_POST['empRatePH'];
-    $sql = "INSERT INTO employees(empID, depCode, empFName, empLName, empRPH)
+    // Secure all inputs to prevent SQL Injection
+    $id = mysqli_real_escape_string($conn, $_POST['id']);
+    $code = mysqli_real_escape_string($conn, $_POST['code']);
+    $FName = mysqli_real_escape_string($conn, $_POST['FName']);
+    $LName = mysqli_real_escape_string($conn, $_POST['LName']);
+    $empRatePH = mysqli_real_escape_string($conn, $_POST['empRatePH']);
+
+    $sql = "INSERT INTO employees(empID, depCode, empFName, empLName, empRPH) 
             VALUES('$id', '$code', '$FName', '$LName', '$empRatePH')";
 
-    mysqli_query($conn, $sql);
-    header("location: Employees.php");
+    if (mysqli_query($conn, $sql)) {
+        header("location: Employees.php");
+        exit();
+    } else {
+        // Failure: Show a simple popup alert (happens if ID is duplicated)
+        echo "<script>alert('Error: This Employee ID already exists!');</script>";
+    }
 }
-//Update Employees logic
+
+// --- 3. UPDATE EMPLOYEES LOGIC ---
 if(isset($_POST['update'])){
-    $id = $_POST['id'];
-    $code = $_POST['code'];
-    $FName = $_POST['FName'];
-    $LName = $_POST['LName'];
-    $empRatePH = $_POST['empRatePH'];
+    $id = mysqli_real_escape_string($conn, $_POST['id']);
+    $code = mysqli_real_escape_string($conn, $_POST['code']);
+    $FName = mysqli_real_escape_string($conn, $_POST['FName']);
+    $LName = mysqli_real_escape_string($conn, $_POST['LName']);
+    $empRatePH = mysqli_real_escape_string($conn, $_POST['empRatePH']);
 
     $sql = "UPDATE employees
             SET depCode = '$code',
@@ -36,18 +48,19 @@ if(isset($_POST['update'])){
             empLName = '$LName',
             empRPH = '$empRatePH'
             WHERE empID = '$id'";
-        mysqli_query($conn, $sql);
-        header("location: Employees.php");
+            
+    mysqli_query($conn, $sql);
+    header("location: Employees.php");
+    exit();
 }   
 
-
-//Delete employee logic
+// --- 4. DELETE EMPLOYEE LOGIC ---
 if (isset($_GET['del'])){
-    $id = $_GET['del'];
+    $id = mysqli_real_escape_string($conn, $_GET['del']);
     mysqli_query($conn, "DELETE FROM employees WHERE empID = '$id'");
     header("location: Employees.php");
+    exit();
 }
-
 ?>
 
 <!DOCTYPE html>

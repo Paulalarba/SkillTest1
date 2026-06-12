@@ -1,50 +1,56 @@
 <?php
 include 'db.php';
-$errorMessage = "";
-$editData = null; // Initialize variable to avoid "undefined variable" errors
+mysqli_report(MYSQLI_REPORT_OFF);
+$editData = null;
 
 // --- 1. FETCH DATA FOR EDITING ---
-// This happens when you click the 'Edit' link in the table
 if (isset($_GET['edit'])) {
-    $editCode = $_GET['edit'];
+    $editCode = mysqli_real_escape_string($conn, $_GET['edit']);
     $result = mysqli_query($conn, "SELECT * FROM departments WHERE depCode = '$editCode'");
     $editData = mysqli_fetch_assoc($result);
 }
 
 // --- 2. ADD NEW DEPARTMENT ---
 if(isset($_POST['Save'])){
-    $code = $_POST['code'];
-    $name = $_POST['name'];
-    $head = $_POST['head'];
-    $tellNo = $_POST['tellNo'];
+    $code = mysqli_real_escape_string($conn, $_POST['code']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $head = mysqli_real_escape_string($conn, $_POST['head']);
+    $tellNo = mysqli_real_escape_string($conn, $_POST['tellNo']);
     
     $sql = "INSERT INTO departments (depCode, depName, depHead, depTellNo) 
             VALUES ('$code', '$name', '$head', '$tellNo')";
-    mysqli_query($conn, $sql);
-    header("Location: Department.php"); // Refresh page to clear form
+            
+    if (mysqli_query($conn, $sql)) {
+        header("Location: Department.php"); 
+        exit();
+    } else {
+        echo "<script>alert('Error: This Department Code already exists!');</script>";
+    }
 }
 
 // --- 3. UPDATE EXISTING DEPARTMENT ---
 if (isset($_POST['update'])){
-    $code = $_POST['code'];
-    $name = $_POST['name'];
-    $head = $_POST['head'];
-    $tellNo = $_POST['tellNo'];
+    $code = mysqli_real_escape_string($conn, $_POST['code']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $head = mysqli_real_escape_string($conn, $_POST['head']);
+    $tellNo = mysqli_real_escape_string($conn, $_POST['tellNo']);
 
     $sql = "UPDATE departments 
             SET depName = '$name', 
             depHead = '$head', 
             depTellNo = '$tellNo' 
-            WHERE depCode = $code";
+            WHERE depCode = '$code'";
     mysqli_query($conn, $sql);
-    header("Location: Department.php"); // Refresh page to clear form
+    header("Location: Department.php");
+    exit();
 }
 
 // --- 4. DELETE DEPARTMENT ---
 if (isset($_GET['del'])){
-    $code = $_GET['del'];
-    mysqli_query($conn, "DELETE FROM departments WHERE depCode = $code");
+    $code = mysqli_real_escape_string($conn, $_GET['del']);
+    mysqli_query($conn, "DELETE FROM departments WHERE depCode = '$code'");
     header("Location: Department.php");
+    exit();
 }
 ?>
 
@@ -67,7 +73,7 @@ if (isset($_GET['del'])){
                     value="<?php echo $editData['depCode'] ?? ''; ?>"
                     <?php echo $editData ? 'readonly' : ''; ?> required>
             </div>
-                        <div class="col-md-3">
+            <div class="col-md-3">
                 <input type="text" name="name" class="form-control" placeholder="Department Name" 
                 value="<?php echo $editData['depName'] ?? ''; ?>" required>
             </div>
@@ -81,11 +87,9 @@ if (isset($_GET['del'])){
             </div>
             <div class="col-12">
                 <?php if (isset($editData)): ?>
-                    <!-- Show Update button only when editing -->
                     <button type="submit" name="update" class="btn btn-success">Update Department</button>
                     <a href="Department.php" class="btn btn-secondary">Cancel</a>
                 <?php else: ?>
-                    <!-- Show Save button only when adding new -->
                     <button type="submit" name="Save" class="btn btn-primary">Add Department</button>
                 <?php endif; ?>
                 <a href="index.php" class="btn btn-secondary">Back to Home</a>
