@@ -1,3 +1,10 @@
+<?php 
+include 'db.php';
+$editData = null;
+mysqli_report(MYSQLI_REPORT_OFF);
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -11,7 +11,8 @@
         <a href="Department.php" class="btn btn-primary btn-lg">Departments Management</a>
         <a href="Employees.php" class="btn btn-primary btn-lg">Employees Management</a>
         <a href="Attendance_record.php" class="btn btn-primary btn-lg">Attendance Recording</a>
-        <a href="Attendance_monitor.php" class="btn btn-primary btn-lg">Attendance Monitoring</a>
+        <a href="Attendance_monitor.php" class="btn btn-primary btn-lg">Attendance Monitoring by Employee</a>
+        <a href="AttendanceByDate.php" class="btn btn-primary btn-lg">Attendance monitoring by Date</a>
     </div>
 </body>
 </html>
