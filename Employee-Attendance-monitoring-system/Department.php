@@ -59,33 +59,33 @@ if (isset($_GET['del'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <title>Departments Management</title>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Departments Management</h1>
+    <div class="container">
+        <h1 class="page-title">Departments Management</h1>
         <hr>
         
-        <form method="POST" class="row g-3 mb-4">
-            <div class="col-md-3">
-                <input type="text" name="code" class="form-control" placeholder="Department Code"
+        <form method="POST" class="form-row">
+            <div class="form-group">
+                <input type="text" name="code" class="form-input" placeholder="Department Code"
                     value="<?php echo $editData['depCode'] ?? ''; ?>"
                     <?php echo $editData ? 'readonly' : ''; ?> required>
             </div>
-            <div class="col-md-3">
-                <input type="text" name="name" class="form-control" placeholder="Department Name" 
+            <div class="form-group">
+                <input type="text" name="name" class="form-input" placeholder="Department Name" 
                 value="<?php echo $editData['depName'] ?? ''; ?>" required>
             </div>
-            <div class="col-md-3">
-                <input type="text" name="head" class="form-control" placeholder="Department Head" 
+            <div class="form-group">
+                <input type="text" name="head" class="form-input" placeholder="Department Head" 
                 value="<?php echo $editData['depHead'] ?? ''; ?>" required>
             </div>
-            <div class="col-md-3">
-                <input type="text" name="tellNo" class="form-control" placeholder="Department Tell No." 
+            <div class="form-group">
+                <input type="text" name="tellNo" class="form-input" placeholder="Department Tell No." 
                 value="<?php echo $editData['depTellNo'] ?? ''; ?>" required>
             </div>
-            <div class="col-12">
+            <div class="form-actions">
                 <?php if (isset($editData)): ?>
                     <button type="submit" name="update" class="btn btn-success">Update Department</button>
                     <a href="Department.php" class="btn btn-secondary">Cancel</a>
@@ -96,8 +96,8 @@ if (isset($_GET['del'])){
             </div>
         </form>
 
-        <table class="table table-bordered">
-            <tr class="table-dark">
+        <table class="data-table">
+            <tr>
                 <th>Code</th><th>Name</th><th>Head</th><th>Tell No.</th><th>Action</th>
             </tr>
             <?php 

@@ -1,13 +1,10 @@
-<!--create php function-->
 <?php
 include 'db.php';
 $editData = null;
 mysqli_report(MYSQLI_REPORT_OFF);
 
-
 // --- 1. EDIT DATA ---
 if (isset($_GET['edit'])){
-    // Secure the input
     $editId = mysqli_real_escape_string($conn, $_GET['edit']);
     $result = mysqli_query($conn, "SELECT * FROM employees WHERE empID = '$editId'");
     $editData = mysqli_fetch_assoc($result);
@@ -15,7 +12,6 @@ if (isset($_GET['edit'])){
 
 // --- 2. ADD EMPLOYEES LOGIC ---
 if(isset($_POST['save'])){
-    // Secure all inputs to prevent SQL Injection
     $id = mysqli_real_escape_string($conn, $_POST['id']);
     $code = mysqli_real_escape_string($conn, $_POST['code']);
     $FName = mysqli_real_escape_string($conn, $_POST['FName']);
@@ -29,7 +25,6 @@ if(isset($_POST['save'])){
         header("location: Employees.php");
         exit();
     } else {
-        // Failure: Show a simple popup alert (happens if ID is duplicated)
         echo "<script>alert('Error: This Employee ID already exists!');</script>";
     }
 }
@@ -68,22 +63,23 @@ if (isset($_GET['del'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
     <title>Employees Management</title>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Employees Management</h1>
+    <div class="container">
+        <h1 class="page-title">Employees Management</h1>
         <hr>
 
-        <form method="POST" class="row g-3 mb-4">
-            <div class="col-md-3">
-                <input type="number" name="id" class="form-control" placeholder="Employee ID"
+        <form method="POST" class="form-row">
+            <div class="form-group">
+                <input type="number" name="id" class="form-input" placeholder="Employee ID"
                     value="<?php echo $editData['empID'] ?? ''; ?>" 
                     <?php echo $editData ? 'readonly' : ''; ?> required>
             </div>
-            <div class="col-md-3">
-                <select name="code" class="form-control" required>
+            <div class="form-group">
+                <select name="code" class="form-input" required>
+                    <option value="">-- Select Department --</option>
                     <?php
                     $deptRes = mysqli_query($conn, "SELECT depCode, depName FROM departments");
                     while ($dept = mysqli_fetch_assoc($deptRes)) {
@@ -92,39 +88,33 @@ if (isset($_GET['del'])){
                     }
                     ?>
                 </select>
-
             </div>
-            <div class="col-md-3">
-                <input type="text" name="FName" class="form-control" placeholder="Last Name"
+            <div class="form-group">
+                <input type="text" name="FName" class="form-input" placeholder="First Name"
                 value="<?php echo $editData['empFName'] ?? ''; ?>" required>
             </div>
-            <div class="col-md-3">
-                <input type="text" name="LName" class="form-control" placeholder="Employee lastName"
+            <div class="form-group">
+                <input type="text" name="LName" class="form-input" placeholder="Last Name"
                 value="<?php echo $editData['empLName'] ?? ''; ?>" required>
             </div>
-            <div class="col-md-3">
-                <input type="text" name="empRatePH" class="form-control" placeholder="Employee Rate per hour"
+            <div class="form-group">
+                <input type="text" name="empRatePH" class="form-input" placeholder="Rate per hour"
                 value="<?php echo $editData['empRPH'] ?? ''; ?>" required>
             </div>
-            <div class="col-12">
+            <div class="form-actions">
                 <?php if (isset($editData)): ?>
                     <button type="submit" name="update" class="btn btn-success">Update Employee</button>
-                    <a href="Employees.php" class="btn btn-secondary">cancel</a>
-
+                    <a href="Employees.php" class="btn btn-secondary">Cancel</a>
                 <?php else: ?>
                     <button type="submit" name="save" class="btn btn-primary">Add Employee</button>
                 <?php endif; ?>
                 <a href="index.php" class="btn btn-secondary">Back to Home</a>
             </div>
         </form>
-        <table class="table table-bordered">
-            <tr class="table-dark">
-                <th>Id</th>
-                <th>Code</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Rate per hour</th>
-                <th>Action</th>
+
+        <table class="data-table">
+            <tr>
+                <th>Id</th><th>Code</th><th>First Name</th><th>Last Name</th><th>Rate per hour</th><th>Action</th>
             </tr>
             <?php 
             $res = mysqli_query($conn, "SELECT * FROM employees");
@@ -142,7 +132,6 @@ if (isset($_GET['del'])){
                 </tr>";
             }
             ?>
-
         </table>
     </div>
 </body>
