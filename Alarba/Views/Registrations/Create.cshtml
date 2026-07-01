@@ -1,0 +1,54 @@
+@model Alarba.Models.Registrations
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Registrations</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="regId" class="control-label"></label>
+                <input asp-for="regId" class="form-control" />
+                <span asp-validation-for="regId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RegistraionId" class="control-label"></label>
+                <input asp-for="RegistraionId" class="form-control" />
+                <span asp-validation-for="RegistraionId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="regDate" class="control-label"></label>
+                <input asp-for="regDate" class="form-control" />
+                <span asp-validation-for="regDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="RegistrationFee" class="control-label"></label>
+                <input asp-for="RegistrationFee" class="form-control" />
+                <span asp-validation-for="RegistrationFee" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="regPayOptions" class="control-label"></label>
+                <input asp-for="regPayOptions" class="form-control" />
+                <span asp-validation-for="regPayOptions" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
